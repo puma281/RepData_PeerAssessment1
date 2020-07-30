@@ -37,6 +37,12 @@ mean(totalstp$meanstp,na.rm = TRUE)
 
 
 ## What is the average daily activity pattern?
+```{r}
+actbydt = actdt %>% group_by(interval) %>% summarize(avgstp = mean(steps,na.rm = TRUE))
+head(actbydt)
+plot(actbydt$interval,actbydt$avgstp,type = "l")
+actbydt[which.max(actbydt$avgstp),]
+```
 
 
 
