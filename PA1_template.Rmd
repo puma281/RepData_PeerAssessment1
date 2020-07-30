@@ -38,16 +38,51 @@ mean(totalstp$meanstp,na.rm = TRUE)
 
 ## What is the average daily activity pattern?
 ```{r}
-actbydt = actdt %>% group_by(interval) %>% summarize(avgstp = mean(steps,na.rm = TRUE))
-head(actbydt)
-plot(actbydt$interval,actbydt$avgstp,type = "l")
-actbydt[which.max(actbydt$avgstp),]
+actbyint = actdt %>% group_by(interval) %>% summarize(avgstp = mean(steps,na.rm = TRUE))
+head(actbyint)
+plot(actbyint$interval,actbyint$avgstp,type = "l")
+actbyint[which.max(actbyint$avgstp),]
 ```
 
 
 
 ## Imputing missing values
 
+```{r}
+missval = is.na(actdt[,1])
+indexvect = actdt[missval,3]
+sum(missval)
+for (i in 1:nrow(actdt)) {
+  for(k in 0:471){
+  if((is.na(actdt[i,1]) == TRUE) & (actdt[i,3] == 5*k) ){
+    actdt[i,1] = actbyint[actbyint[,1] == 5*k,][,2]
+  }
+  }
+}
+actnewdt = actdt
+totalstpn = actnewdt %>% group_by(date) %>% summarize(meanstp = mean(steps,na.rm = TRUE),totstp = sum(steps,na.rm = TRUE),medstp = median(steps,na.rm = TRUE))
+head(totalstpn)
+hist(totalstpn$totstp)
+median(totalstpn$medstp,na.rm = TRUE)
+mean(totalstpn$meanstp,na.rm = TRUE)
+
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r}
+
+actdtwk = actdt
+actdtwk$day = weekdays(actdtwk$date)
+weekenddtlg = filter(actdtwk,day == c("Saturday","Sunday"))
+head(weekenddtlg)
+weekdtlg = filter(actdtwk,day == c("Monday","Tuesday","Wednesday","Thursday","Friday"))
+head(weekdtlg)
+actbyintwk = weekdtlg %>% group_by(interval) %>% summarize(avgstp = mean(steps,na.rm = TRUE))
+head(actbyintwk)
+plot(actbyintwk$interval,actbyintwk$avgstp,type = "l")
+actbyintwnd = weekenddtlg %>% group_by(interval) %>% summarize(avgstp = mean(steps,na.rm = TRUE))
+head(actbyintwnd)
+plot(actbyintwnd$interval,actbyintwnd$avgstp,type = "l")
+```
+
