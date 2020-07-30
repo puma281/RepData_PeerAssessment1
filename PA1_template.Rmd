@@ -7,15 +7,20 @@ output:
 
 
 ## Loading and preprocessing the data
+one set is original data set and one more is data set without NA values
 ```{r}
 actdt = read.csv("activity.csv")
 head(actdt)
+actvlt = !is.na(actdt[,1])
+actvldt = actdt[actvlt,][]
+head(actvldt)
 ```
 
 
 
 
 ## What is mean total number of steps taken per day?
+
 
 
 
